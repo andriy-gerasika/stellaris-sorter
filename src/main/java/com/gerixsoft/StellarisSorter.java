@@ -120,7 +120,7 @@ public class StellarisSorter {
         System.out.println("result:");
         System.out.println("\t" + newOwnedPlanets);
         
-        String newGameState = gameState.substring(0, ownedPlanets_beginIndex) + newOwnedPlanets + gameState.substring(ownedPlanets_endIndex);
+        String newGameState = gameState.substring(0, ownedPlanets_beginIndex) + System.lineSeparator() + "\t\t\t" + newOwnedPlanets + System.lineSeparator() + "\t\t" + gameState.substring(ownedPlanets_endIndex);
         Files.write(zipFS.getPath("gamestate"), newGameState.getBytes(), StandardOpenOption.WRITE);
         } finally {
             zipFS.close();

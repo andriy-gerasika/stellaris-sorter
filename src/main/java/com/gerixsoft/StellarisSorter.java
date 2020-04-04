@@ -61,10 +61,10 @@ public class StellarisSorter {
 
         Map<String, String> sortedPlanets = new TreeMap<String, String>();        
         for (String ownedPlanet : ownedPlanets.split("[ \t]")) {
-            int planet_beginIndex = gameState.indexOf(ownedPlanet + "={", planets_beginIndex);
+            int planet_beginIndex = gameState.indexOf("\t" + ownedPlanet + "={", planets_beginIndex);
             if (planet_beginIndex == -1)
                 throw new InternalError("not found planet " + ownedPlanet);
-            planet_beginIndex += (ownedPlanet + "={").length();
+            planet_beginIndex += ("\t" + ownedPlanet + "={").length();
 
             int name_beginIndex = gameState.indexOf("name=\"", planet_beginIndex);
             if (name_beginIndex == -1)
@@ -99,13 +99,15 @@ public class StellarisSorter {
                 z = 0;
             else if (designation.startsWith("col_ecu_"))
                 z = 1;
-            else if (designation.startsWith("col_habitat_"))
+            else if (designation.startsWith("col_ring_"))
                 z = 2;
+            else if (designation.startsWith("col_habitat_"))
+                z = 3;
             else if (designation.isEmpty()) // is colonized
-                z = 4;
+                z = 5;
             else {
                 designation = "fake_col_planet";
-                z = 3; // regular planet
+                z = 6; // regular planet
             }
             sortedPlanets.put(String.format("%d\tdesignation='%s', name='%s'", z, designation, name), ownedPlanet);
         }

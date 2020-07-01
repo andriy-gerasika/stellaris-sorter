@@ -95,20 +95,26 @@ public class StellarisSorter {
                     ownedPlanet, name, designation));
 
             int z;
-            if (designation.equals("col_capital"))
+            if (designation.startsWith("col_capital"))
                 z = 0;
             else if (designation.startsWith("col_ecu_"))
                 z = 1;
             else if (designation.startsWith("col_ring_"))
                 z = 2;
-            else if (designation.startsWith("col_habitat_"))
+            else if (designation.startsWith("col_habitat_research"))
                 z = 3;
-            else if (designation.isEmpty()) // is colonized
+            else if (designation.startsWith("col_habitat_energy"))
+                z = 4;
+            else if (designation.startsWith("col_habitat_mining"))
                 z = 5;
+            else if (designation.isEmpty()) // is colonized
+                z = 8;
             else {
                 designation = "fake_col_planet";
-                z = 6; // regular planet
+                z = 7; // regular planet
             }
+            if (name.startsWith("NAME_")) // Sanctuary
+                name = name.substring("NAME_".length());
             sortedPlanets.put(String.format("%d\tdesignation='%s', name='%s'", z, designation, name), ownedPlanet);
         }
 

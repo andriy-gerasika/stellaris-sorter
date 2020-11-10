@@ -8,6 +8,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -23,6 +25,22 @@ public class StellarisSorter {
         obj.run(args[0]);
     }
 
+    private static final String[] PLANET_ORDER = new String[] {
+        "col_capital", //
+        "col_ecu_", //
+        "col_ring_", //
+        "col_habitat_research", //
+        "col_habitat_energy", //
+        "col_habitat_mining", //
+        "col_bureau", //
+        "bureau", //
+        "col_habitat_foundry", //
+        "col_habitat_factory", //
+        "col_habitat_trade", //
+        "col_generator", //
+        "col_mining", //
+    };
+    		
     private void run(String fileName) throws IOException {
         if (!fileName.endsWith(".sav"))
             throw new IllegalArgumentException(fileName);
@@ -94,28 +112,16 @@ public class StellarisSorter {
             System.out.println(String.format("\tfound owned_planet = { id = %s, name = '%s', designation = '%s' }",
                     ownedPlanet, name, designation));
 
-            int z;
-            if (designation.startsWith("col_capital"))
-                z = 0;
-            else if (designation.startsWith("col_ecu_"))
-                z = 1;
-            else if (designation.startsWith("col_ring_"))
-                z = 2;
-            else if (designation.startsWith("col_habitat_research"))
-                z = 3;
-            else if (designation.startsWith("col_habitat_energy"))
-                z = 4;
-            else if (designation.startsWith("col_habitat_mining"))
-                z = 5;
-            else if (designation.isEmpty()) // is colonized
-                z = 8;
-            else {
-                designation = "fake_col_planet";
-                z = 7; // regular planet
-            }
+            int z = 1000;
+            for (int i = 0, n = PLANET_ORDER.length; i < n; ++i) 
+            	if (designation.startsWith(PLANET_ORDER[i])) {
+            		z = i;
+            		break;
+            	}
+
             if (name.startsWith("NAME_")) // Sanctuary
                 name = name.substring("NAME_".length());
-            sortedPlanets.put(String.format("%d\tdesignation='%s', name='%s'", z, designation, name), ownedPlanet);
+            sortedPlanets.put(String.format("%02d\tdesignation='%s', name='%s'", z, designation, name), ownedPlanet);
         }
 
         System.out.println("sorted planets:");
